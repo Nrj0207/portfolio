@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Neeraj Singh — Technical Specialist, Network & Security</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a1628;
+    --bg-panel:#101e35;
+    --line:#1f3454;
+    --signal:#4fb3ff;
+    --signal-dim:#1e3f5c;
+    --amber:#f0a345;
+    --text:#e7edf6;
+    --text-dim:#93a4bc;
+    --text-faint:#5c7090;
+    --radius:2px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    line-height:1.6;
+    overflow-x:hidden;
+  }
+  ::selection{background:var(--signal);color:#ffffff;}
+
+  a{color:var(--signal);text-decoration:none;}
+
+  .grain{
+    position:fixed;inset:0;pointer-events:none;z-index:1;
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size:64px 64px;
+    opacity:.25;
+    mask-image:radial-gradient(ellipse 80% 60% at 50% 0%, #000 40%, transparent 100%);
+  }
+
+  header.nav{
+    position:fixed;top:0;left:0;right:0;z-index:50;
+    display:flex;justify-content:space-between;align-items:center;
+    padding:22px clamp(20px,5vw,64px);
+    background:rgba(10,22,40,.8);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav .mark{
+    font-family:'JetBrains Mono',monospace;
+    font-size:13px;color:var(--signal);
+    display:flex;align-items:center;gap:8px;
+  }
+  .mark .dot{width:6px;height:6px;border-radius:50%;background:var(--signal);box-shadow:0 0 8px var(--signal);animation:pulse 2.4s infinite;}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+  .nav ul{list-style:none;display:flex;gap:32px;}
+  .nav ul a{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--text-dim);transition:color .2s;
+  }
+  .nav ul a:hover{color:var(--text);}
+  .nav .cta{
+    font-family:'JetBrains Mono',monospace;font-size:12px;
+    border:1px solid var(--signal-dim);color:var(--signal);
+    padding:8px 16px;border-radius:var(--radius);
+    transition:background .2s,color .2s;
+  }
+  .nav .cta:hover{background:var(--signal);color:#ffffff;}
+  .navtoggle{display:none;}
+
+  section{padding:120px clamp(20px,6vw,90px);position:relative;z-index:2;}
+
+  /* HERO */
+  .hero{
+    min-height:100vh;
+    display:flex;flex-direction:column;justify-content:center;
+    padding-top:140px;
+    position:relative;
+  }
+  .hero-eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;color:var(--signal);letter-spacing:.12em;text-transform:uppercase;
+    display:flex;align-items:center;gap:10px;margin-bottom:22px;
+  }
+  .hero-eyebrow::before{content:'';width:28px;height:1px;background:var(--signal);}
+  h1.hero-title{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:700;
+    font-size:clamp(40px,7vw,86px);
+    line-height:1.02;
+    letter-spacing:-.02em;
+    max-width:1000px;
+  }
+  h1.hero-title em{
+    font-style:normal;color:var(--signal);
+  }
+  .hero-sub{
+    margin-top:26px;
+    max-width:620px;
+    font-size:clamp(15px,1.6vw,18px);
+    color:var(--text-dim);
+  }
+  .hero-stats{
+    display:flex;gap:48px;margin-top:64px;flex-wrap:wrap;
+  }
+  .stat .num{
+    font-family:'Space Grotesk',sans-serif;font-weight:600;
+    font-size:34px;color:var(--text);
+  }
+  .stat .lbl{
+    font-family:'JetBrains Mono',monospace;font-size:11px;
+    color:var(--text-faint);text-transform:uppercase;letter-spacing:.08em;margin-top:4px;
+  }
+  .hero-actions{margin-top:54px;display:flex;gap:16px;flex-wrap:wrap;}
+  .btn-primary{
+    font-family:'JetBrains Mono',monospace;font-size:13px;
+    background:var(--signal);color:#ffffff;padding:14px 26px;
+    border-radius:var(--radius);font-weight:500;
+    transition:transform .2s, box-shadow .2s;
+  }
+  .btn-primary:hover{box-shadow:0 0 24px rgba(15,143,120,.3);transform:translateY(-1px);}
+  .btn-ghost{
+    font-family:'JetBrains Mono',monospace;font-size:13px;
+    border:1px solid var(--line);color:var(--text-dim);padding:14px 26px;
+    border-radius:var(--radius);transition:border-color .2s,color .2s;
+  }
+  .btn-ghost:hover{border-color:var(--text-dim);color:var(--text);}
+
+  /* topology canvas behind hero */
+  #topo{
+    position:absolute;top:0;right:-5%;width:60%;height:100%;
+    z-index:-1;opacity:.55;
+  }
+  @media (max-width:900px){#topo{display:none;}}
+
+  /* SECTION HEADERS */
+  .sec-head{display:flex;align-items:baseline;gap:18px;margin-bottom:54px;}
+  .sec-num{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--signal);}
+  .sec-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(26px,3.4vw,38px);font-weight:600;}
+  .sec-rule{flex:1;height:1px;background:var(--line);}
+
+  /* ABOUT */
+  .about-grid{
+    display:grid;grid-template-columns:1.3fr .9fr;gap:64px;
+  }
+  @media (max-width:800px){.about-grid{grid-template-columns:1fr;}}
+  .about-text p{color:var(--text-dim);margin-bottom:18px;font-size:15.5px;}
+  .about-text strong{color:var(--text);font-weight:600;}
+  .about-cards{display:flex;flex-direction:column;gap:14px;}
+  .about-card{
+    border:1px solid var(--line);border-radius:var(--radius);padding:18px 20px;
+    background:var(--bg-panel);
+  }
+  .about-card .k{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-faint);text-transform:uppercase;letter-spacing:.08em;}
+  .about-card .v{margin-top:6px;font-size:14.5px;color:var(--text);}
+
+  /* EXPERIENCE - network topology timeline */
+  .topology-line{position:relative;padding-left:36px;}
+  .topology-line::before{
+    content:'';position:absolute;left:7px;top:10px;bottom:10px;width:1px;
+    background:linear-gradient(var(--signal-dim), var(--line) 90%);
+  }
+  .node{position:relative;padding-bottom:56px;}
+  .node:last-child{padding-bottom:0;}
+  .node::before{
+    content:'';position:absolute;left:-36px;top:4px;width:15px;height:15px;border-radius:50%;
+    background:var(--bg);border:2px solid var(--signal);
+  }
+  .node.current::before{box-shadow:0 0 0 4px rgba(62,230,196,.15);}
+  .node-head{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px;margin-bottom:8px;}
+  .node-role{font-family:'Space Grotesk',sans-serif;font-size:21px;font-weight:600;}
+  .node-meta{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text-faint);}
+  .node-org{color:var(--signal);font-size:14px;margin-bottom:14px;font-family:'JetBrains Mono',monospace;}
+  .node ul{list-style:none;color:var(--text-dim);font-size:14.5px;}
+  .node li{position:relative;padding-left:18px;margin-bottom:8px;}
+  .node li::before{content:'→';position:absolute;left:0;color:var(--text-faint);}
+
+  /* SKILLS */
+  .skill-groups{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:32px;}
+  .skill-group h4{
+    font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--amber);
+    text-transform:uppercase;letter-spacing:.08em;margin-bottom:16px;
+  }
+  .chip-row{display:flex;flex-wrap:wrap;gap:8px;}
+  .chip{
+    font-family:'JetBrains Mono',monospace;font-size:12.5px;
+    border:1px solid var(--line);padding:7px 12px;border-radius:var(--radius);
+    color:var(--text-dim);transition:border-color .2s,color .2s;
+  }
+  .chip:hover{border-color:var(--signal-dim);color:var(--text);}
+
+  /* CERTS / EDUCATION */
+  .twocol{display:grid;grid-template-columns:1fr 1fr;gap:64px;}
+  @media (max-width:800px){.twocol{grid-template-columns:1fr;}}
+  .cert{border-left:2px solid var(--signal-dim);padding:4px 0 22px 18px;margin-bottom:4px;}
+  .cert .name{font-weight:600;font-size:15px;}
+  .cert .meta{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text-faint);margin-top:4px;}
+  .edu{margin-bottom:22px;}
+  .edu .deg{font-weight:600;font-size:15px;}
+  .edu .school{color:var(--text-dim);font-size:13.5px;margin-top:3px;}
+  .edu .yr{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text-faint);margin-top:3px;}
+
+  /* CONTACT */
+  .contact{
+    text-align:center;
+    border-top:1px solid var(--line);
+  }
+  .contact .sec-title{margin:0 auto 18px;}
+  .contact p{color:var(--text-dim);max-width:520px;margin:0 auto 40px;}
+  .contact-links{display:flex;justify-content:center;gap:28px;flex-wrap:wrap;font-family:'JetBrains Mono',monospace;font-size:14px;}
+  footer{
+    text-align:center;padding:30px;font-family:'JetBrains Mono',monospace;
+    font-size:11px;color:var(--text-faint);border-top:1px solid var(--line);
+  }
+
+  @media (max-width:700px){
+    .nav ul{display:none;}
+    .hero-stats{gap:30px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="grain"></div>
+
+<header class="nav">
+  <div class="mark"><span class="dot"></span>Neeraj Singh // Network Engineer</div>
+  <ul>
+    <li><a href="#about">About</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#resume">Resume</a></li>
+    <li><a href="#Certifications">Certifications</a></li>
+  </ul>
+  <a class="cta" href="https://www.linkedin.com/in/neeraj-singha9ba49187" target="_blank" rel="noopener">LinkedIn</a>
+</header>
+
+<section class="hero" id="top">
+  <svg id="topo" viewBox="0 0 500 600" xmlns="http://www.w3.org/2000/svg">
+    <g stroke="#1f2a36" stroke-width="1">
+      <line x1="80" y1="100" x2="240" y2="180"/>
+      <line x1="240" y1="180" x2="420" y2="120"/>
+      <line x1="240" y1="180" x2="180" y2="340"/>
+      <line x1="180" y1="340" x2="360" y2="380"/>
+      <line x1="180" y1="340" x2="60" y2="460"/>
+      <line x1="360" y1="380" x2="320" y2="540"/>
+      <line x1="360" y1="380" x2="460" y2="470"/>
+    </g>
+    <g id="pulse-dots" fill="#3ee6c4">
+      <circle cx="80" cy="100" r="4"/>
+      <circle cx="420" cy="120" r="4"/>
+      <circle cx="240" cy="180" r="6"/>
+      <circle cx="180" cy="340" r="6"/>
+      <circle cx="360" cy="380" r="6"/>
+      <circle cx="60" cy="460" r="4"/>
+      <circle cx="320" cy="540" r="4"/>
+      <circle cx="460" cy="470" r="4"/>
+    </g>
+  </svg>
+
+  <div class="hero-eyebrow">Pune, India · Available for engagements</div>
+  <h1 class="hero-title">Designing networks<br>that don't <em>go down.</em></h1>
+  <p class="hero-sub">I'm Neeraj Singh, a Network & Security Specialist with 9.5 years building, securing, and automating enterprise infrastructure — from Cisco Meraki and SD-WAN to Azure cloud networking.</p>
+
+  <div class="hero-stats">
+    <div class="stat"><div class="num">9.5</div><div class="lbl">Years Experience</div></div>
+    <div class="stat"><div class="num">3</div><div class="lbl">Companies</div></div>
+    <div class="stat"><div class="num">5</div><div class="lbl">Certifications</div></div>
+  </div>
+
+  <div class="hero-actions">
+    <a class="btn-primary" href="#experience">View experience</a>
+    <a class="btn-ghost" href="#contact">Get in touch</a>
+  </div>
+</section>
+
+<section id="about">
+  <div class="sec-head"><span class="sec-num">01</span><span class="sec-title">About</span><span class="sec-rule"></span></div>
+  <div class="about-grid">
+    <div class="about-text">
+      <p>With over <strong>9.5 years of experience</strong> in network and security solutions, I specialize in configuring and managing cutting-edge <strong>Cisco SD-WAN</strong> solutions, wireless controllers, and advanced firewalls to deliver secure, scalable network operations.</p>
+      <p>At Microland, I've contributed to the planning, migration, and deployment of <strong>Cisco Catalyst SD-WAN</strong>, and configured Catalyst 9000 Series Switches to strengthen enterprise networks — alongside Palo Alto firewall administration, Azure networking (Route Server, NSG, WAF), and Wi-Fi planning with Ekahau.</p>
+      <p>I'm committed to optimizing network performance, enhancing security, and driving resilient infrastructure solutions that align with organizational goals and foster a collaborative environment.</p>
+    </div>
+    <div class="about-cards">
+      
+      <div class="about-card"><div class="k">Top skills</div><div class="v">Routing, Cisco SDWAN, Viptela</div></div>
+      <div class="about-card"><div class="k">Currently</div><div class="v">Technical Specialist — Network & Security, Microland</div></div>
+      <div class="about-card"><div class="k">Contact</div><div class="v">sneeraj519@gmail.com · 9990909826</div></div>
+      <div class="about-card"><div class="k">LinkedIn</div><div class="v"><a href="https://www.linkedin.com/in/neeraj-singha9ba49187" target="_blank" rel="noopener">linkedin.com/in/neeraj-singha9ba49187</a></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="experience">
+  <div class="sec-head"><span class="sec-num">02</span><span class="sec-title">Experience</span><span class="sec-rule"></span></div>
+  <div class="topology-line">
+
+    <div class="node current">
+      <div class="node-head"><span class="node-role">Technical Specialist — Network & Security</span><span class="node-meta">01/2025 – Current</span></div>
+      <div class="node-org">Microland · Pune, India</div>
+      <ul>
+        <li>Worked on the Cisco Catalyst SD-WAN migration project, overseeing planning, migration, and cutover activities</li>
+        <li>Configured and managed Cisco Catalyst 9800 wireless controllers and 9000 series switches</li>
+        <li>Administered Palo Alto firewalls: security policies, NAT, VPN, traffic inspection</li>
+        <li>Performed Wi-Fi site surveys and RF analysis using Ekahau</li>
+        <li>Deployed Cisco Meraki vMX and Azure Route Server for secure cloud connectivity</li>
+      </ul>
+    </div>
+
+    <div class="node">
+      <div class="node-head"><span class="node-role">Senior Network Analyst</span><span class="node-meta">06/2023 – 01/2025</span></div>
+      <div class="node-org">TELUS Digital · Noida, India</div>
+      <ul>
+        <li>Design engineer for SDN projects centered on Meraki MX, MS, and MR devices</li>
+        <li>Integrated Meraki with legacy Cisco devices and third-party firewalls</li>
+        <li>Configured FortiGate as SD-WAN, including static routing and web filtering</li>
+        <li>Managed FortiGate fleet via FortiCloud — logging, reporting, firmware, backups</li>
+      </ul>
+    </div>
+
+    <div class="node">
+      <div class="node-head"><span class="node-role">Network Administrator</span><span class="node-meta">12/2016 – 06/2023</span></div>
+      <div class="node-org">Wipro Limited · Pune, India</div>
+      <ul>
+        <li>Designed, implemented, configured, and troubleshot Meraki, LAN, WAN, and data center infrastructure with Cisco Nexus, ISR, ASR, Catalyst routers/switches, and 2500 wireless controllers</li>
+        <li>Automated configurations using the Postman API; integrated cloud networks with Meraki solutions</li>
+        <li>Implemented routing protocols, traffic filters (ACLs, route maps, NAT), SNMP, HSRP, NTP, TACACS, Radius, IPsec, ZBF, VTP, STP, and port security; managed Cisco ISE operations</li>
+        <li>Hands-on with Azure cloud: VM configuration, NSG, VNET, load balancers, WAF rules, redundancy, and VNET peering</li>
+        <li>Deployed voice setups on Cisco Call Manager Express (CME); implemented SIP/SCCP phones (7925, 7945, 7965, 88XX), SIP trunks, Meet Me, paging, CDR, and E1/T1</li>
+        <li>Proactively monitored networks with SolarWinds; managed P1/P2 incident bridges and performed L1 troubleshooting on routers, switches, and Riverbed Layer 3 devices</li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+
+<section id="skills">
+  <div class="sec-head"><span class="sec-num">03</span><span class="sec-title">Skills</span><span class="sec-rule"></span></div>
+  <div class="skill-groups">
+    <div class="skill-group">
+      <h4>SD-WAN & Switching</h4>
+      <div class="chip-row">
+        <span class="chip">Cisco Catalyst SD-WAN</span>
+        <span class="chip">Viptela</span>
+        <span class="chip">Routing</span>
+        <span class="chip">Meraki MX / MS / MR</span>
+        <span class="chip">Catalyst 2960–9500</span>
+        <span class="chip">Nexus / ISR / ASR</span>
+      </div>
+    </div>
+    <div class="skill-group">
+      <h4>Security</h4>
+      <div class="chip-row">
+        <span class="chip">Palo Alto Networks</span>
+        <span class="chip">FortiGate</span>
+        <span class="chip">Cisco ISE</span>
+        <span class="chip">IPsec / ZBF</span>
+      </div>
+    </div>
+    <div class="skill-group">
+      <h4>Wireless</h4>
+      <div class="chip-row">
+        <span class="chip">Catalyst 9800</span>
+        <span class="chip">2500–5500 WLC</span>
+        <span class="chip">Mobility Express</span>
+        <span class="chip">Ekahau Survey</span>
+      </div>
+    </div>
+    <div class="skill-group">
+      <h4>Cloud & Automation</h4>
+      <div class="chip-row">
+        <span class="chip">Microsoft Azure</span>
+        <span class="chip">Python</span>
+        <span class="chip">Postman API</span>
+        <span class="chip">BlueCat IPAM/DDI</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="Certifications">
+  <div class="sec-head"><span class="sec-num">04</span><span class="sec-title">Certifications</span><span class="sec-rule"></span></div>
+  <div class="twocol">
+    <div>
+      <h4 style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--amber);text-transform:uppercase;letter-spacing:.08em;margin-bottom:18px;">Certifications</h4>
+      <div class="cert"><div class="name">Microsoft Certified: Azure Administrator Associate</div><div class="meta">Microsoft</div></div>
+      <div class="cert"><div class="name">Cisco Certified Specialist — Enterprise SD-WAN</div><div class="meta">Cisco</div></div>
+      <div class="cert"><div class="name">Fortinet Certified Associate — Cybersecurity</div><div class="meta">Fortinet</div></div>
+      <div class="cert"><div class="name">AI Tools Workshop</div><div class="meta">Be 10X </div></div>
+      <div class="cert"><div class="name">Project Management Assessment</div><div class="meta">LearnTube.ai</div></div>
+    </div>
+    <div>
+      <h4 style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--amber);text-transform:uppercase;letter-spacing:.08em;margin-bottom:18px;">Education</h4>
+      <div class="edu"><div class="deg">Master of Technology (MTech), System Engineering</div><div class="school">Birla Institute of Technology and Science, Pilani</div><div class="yr">Oct 2020 – Sep 2022</div></div>
+      <div class="edu"><div class="deg">Bachelor of Technology (BTech), Information Technology</div><div class="school">Birla Institute of Technology and Science, Pilani</div><div class="yr">Apr 2017 – Oct 2020</div></div>
+ <div class="edu"><div class="deg">Diploma in ECE</div><div class="school">GNDIT, Board of Technical Education Delhi</div><div class="yr">2013 – 2016</div></div>
+
+    </div>
+  </div>
+</section>
+
+<section id="resume">
+  <div class="sec-head"><span class="sec-num">05</span><span class="sec-title">Resume</span><span class="sec-rule"></span></div>
+  <div class="about-card" style="display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;padding:28px 30px;">
+    <div>
+      <div class="k">PDF · Updated 2026</div>
+      <div class="v" style="font-size:17px;margin-top:8px;">Neeraj Singh — Technical Specialist, Network & Security</div>
+    </div>
+    <a class="btn-primary" href="Neeraj_Singh_Resume.pdf" download>Download resume ↓</a>
+  </div>
+</section>
+
+<section class="contact" id="contact">
+  <div class="sec-title">Let's connect</div>
+  <p>Open to roles and projects in enterprise networking, SD-WAN architecture, and network security.</p>
+  <div class="contact-links">
+    <a href="mailto:sneeraj519@gmail.com">sneeraj519@gmail.com</a>
+    <span style="color:var(--text-faint)">/</span>
+    <a href="tel:9990909826">9990909826</a>
+    <span style="color:var(--text-faint)">/</span>
+    <a href="https://www.linkedin.com/in/neeraj-singha9ba49187" target="_blank" rel="noopener">LinkedIn</a>
+  </div>
+</section>
+
+<footer>© 2026 Neeraj Singh — Built with intent, like every good topology.</footer>
+
+<script>
+  // gentle pulse animation on topology nodes
+  const dots = document.querySelectorAll('#pulse-dots circle');
+  dots.forEach((d,i)=>{
+    d.style.transformOrigin = `${d.getAttribute('cx')}px ${d.getAttribute('cy')}px`;
+    d.animate(
+      [{opacity:1, transform:'scale(1)'},{opacity:.4, transform:'scale(1.6)'},{opacity:1, transform:'scale(1)'}],
+      {duration: 2600 + (i*220), iterations: Infinity, delay: i*180}
+    );
+  });
+
+  // reveal-on-scroll for nodes and cards
+  const revealEls = document.querySelectorAll('.node, .about-card, .skill-group, .cert, .edu');
+  revealEls.forEach(el=>{el.style.opacity=0; el.style.transform='translateY(16px)'; el.style.transition='opacity .6s ease, transform .6s ease';});
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        e.target.style.opacity=1;
+        e.target.style.transform='translateY(0)';
+        io.unobserve(e.target);
+      }
+    });
+  }, {threshold:.15});
+  revealEls.forEach(el=>io.observe(el));
+</script>
+
+</body>
+</html>
